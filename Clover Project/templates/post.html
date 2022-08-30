@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<html lang="en">
+ <head>
+   <meta charset="utf-8">
+ </head>
+ <body>
+  <h2>{% block title %} {{ post['title'] }} {% endblock %}</h2>
+  <span class="badge badge-primary">{{ post['created'] }}</span>
+  <p>{{ post['content'] }}</p>
+  <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Spending</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for key, value in customers.items() %}
+       <tr>
+           <td> {{ value['firstName'] }} {{ value['lastName'] }}</td>
+           <td> ${{ value['total'] }} </td>
+       </tr>
+      {% endfor %}
+      </tbody>
+    </table> 
+    <div>
+      <canvas id="CustomersBarChart" width="240px" height="240px"></canvas>
+    </div>
+    <div>
+      <canvas id="TransactionsBarChart" width="240px" height="240px"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+     const ctx1 = document.getElementById('CustomersBarChart').getContext('2d');
+     const myChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{ names|tojson }}, 
+            datasets: [{
+                label: 'Dollars',
+                data: {{ values|tojson }}, // Data on Y axis
+                borderWidth: 1
+            }]
+        }
+     });
+
+    const ctx2 = document.getElementById('TransactionsBarChart').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+       type: 'line',
+       data: {
+           labels: {{ listTimes|tojson }}, 
+           datasets: [{
+               label: 'Dollars',
+               data: {{ listTotal|tojson }}, // Data on Y axis
+               backgroundColor: [
+                        '#3c8dbc',
+                        '#f56954',
+                        '#f39c12',
+                    ],
+               borderWidth: 1
+           }]
+       }
+    });
+    </script>
+ </body>
+</html> 
+{% endblock %}
